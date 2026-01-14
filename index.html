@@ -127,5 +127,36 @@
     </div>
 
     <script src="main.js"></script>
+    <script>
+    
+    let autoScrollInterval;
+let userInteracted = false;
+
+function startAutoScroll() {
+    let scrollSpeed = 0.3; // smaller = slower (cinematic)
+    
+    autoScrollInterval = setInterval(() => {
+        if (!userInteracted) {
+            window.scrollBy(0, scrollSpeed);
+        }
+    }, 16); // ~60fps
+}
+
+// Stop auto-scroll when user interacts
+function stopAutoScroll() {
+    userInteracted = true;
+    clearInterval(autoScrollInterval);
+}
+
+// Start auto-scroll after page loads
+window.addEventListener("load", () => {
+    setTimeout(startAutoScroll, 2000); // wait 2 sec
+});
+
+// Detect user interaction
+window.addEventListener("wheel", stopAutoScroll);
+window.addEventListener("touchstart", stopAutoScroll);
+window.addEventListener("keydown", stopAutoScroll);
+</script>
 </body>
 </html>
