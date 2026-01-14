@@ -129,34 +129,42 @@
     <script src="main.js"></script>
     <script>
     
-    let autoScrollInterval;
+  let autoScrollInterval;
 let userInteracted = false;
 
 function startAutoScroll() {
-    let scrollSpeed = 15; // smaller = slower (cinematic)
-    
+    let scrollSpeed = 20; // cinematic slow speed
+
     autoScrollInterval = setInterval(() => {
-        if (!userInteracted) {
-            window.scrollBy(0, scrollSpeed);
+        if (userInteracted) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+
+        // Stop when bottom is reached
+        if (scrollTop + windowHeight >= docHeight - 2) {
+            clearInterval(autoScrollInterval);
+            return;
         }
-    }, 16); // ~60fps
+
+        window.scrollBy(0, scrollSpeed);
+    }, 16);
 }
 
-// Stop auto-scroll when user interacts
 function stopAutoScroll() {
     userInteracted = true;
     clearInterval(autoScrollInterval);
 }
 
-// Start auto-scroll after page loads
 window.addEventListener("load", () => {
-    setTimeout(startAutoScroll, 2000); // wait 2 sec
+    setTimeout(startAutoScroll, 2000);
 });
 
-// Detect user interaction
-window.addEventListener("wheel", stopAutoScroll);
-window.addEventListener("touchstart", stopAutoScroll);
+window.addEventListener("wheel", stopAutoScroll, { passive: true });
+window.addEventListener("touchstart", stopAutoScroll, { passive: true });
 window.addEventListener("keydown", stopAutoScroll);
+
 </script>
 </body>
 </html>
